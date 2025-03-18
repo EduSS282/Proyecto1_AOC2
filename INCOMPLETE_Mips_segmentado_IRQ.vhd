@@ -382,6 +382,7 @@ END COMPONENT;
 	signal jal_ID, ret_ID, jal_EX, jal_MEM, jal_WB : std_logic; 
 	-- new signal for fetch_inc instruction
 	signal f_inc_ID, f_inc_ex, f_inc_mem : std_logic;
+	signal signoExtendido_EX, signoExtendido_MEM, signoExtendido_WB : std_logic_vector(31 downto 0);
 
 begin
 
@@ -536,7 +537,7 @@ begin
 						Reg_Rt_ID => IR_ID(20 downto 16), Reg_Rd_ID => IR_ID(15 downto 11), Reg_Rt_EX => Reg_Rt_EX, Reg_Rd_EX => Reg_Rd_EX, 
 						valid_I_EX_in => valid_I_EX_in, valid_I_EX => valid_I_EX,
 						-- Extension ports. Initially they are disconnected
-						ext_word_1_ID => PC4_ID, ext_word_2_ID => x"00000000", ext_signal_1_ID => JAL_ID, ext_signal_2_ID => f_inc_id,
+						ext_word_1_ID => PC4_ID, ext_word_2_ID => inm_ext, ext_signal_1_ID => JAL_ID, ext_signal_2_ID => f_inc_id,
 						ext_word_1_EX => PC4_EX, ext_word_2_EX => open, ext_signal_1_EX => JAL_EX, ext_signal_2_EX => f_inc_ex
 						);  		
 	

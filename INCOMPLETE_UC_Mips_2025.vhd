@@ -91,7 +91,12 @@ begin
 			--RTE
 			WHEN  RTE_opcode  	=>  RTE <= '1'; -- Any more signals?
 			--Fetch_inc
-			WHEN  FI_opcode  	=>  f_inc <= '1'; -- Any more signals?
+			WHEN  FI_opcode  	=>  f_inc <= '1';
+									ALuSrc <= '1';
+									RegDst <= '0'; -- Queremos RT.
+									-- No hay que tocar nada para la ALU porque ALUCtrl está por defecto
+									-- a "000"
+									MemtoReg <= "00";
 			-- OP code undefined
 			WHEN  OTHERS 	  	=> UNDEF <= '1';
 		  END CASE;
