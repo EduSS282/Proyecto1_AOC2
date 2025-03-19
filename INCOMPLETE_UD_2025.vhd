@@ -46,7 +46,9 @@ begin
 -- if a jump instruction does not have its operands available, it does not know whether to jump or not (for BEQ), or whether to jump in the case of RET. It doesn't matter what it says jump taken. You have to stop and wait until you have the operands
 -- if the instruction in ID is not valid, you have to ignore it when it tells you that it is going to jump (the same as if it tells you anything else), but pay attention to the valid instructions.
 -- Complete: activate Kill_IF where applicable
-		Kill_IF <= '0';
+
+		-- EDU <Completado sencillamente siguiendo las instrucciones de arriba>
+		Kill_IF <= '1' when ((salto_tomado = '1') and (valid_I_ID = '1')) else '0';
 -------------------------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------------------
 -- Data dependencies:
@@ -57,31 +59,36 @@ begin
 -- Register use: identifies if the current instruction reads Rs or Rt
 	rs_read <= '1' when ((IR_op_code = ARIT_opcode) or (IR_op_code = LW_opcode) or (IR_op_code = SW_opcode) or (IR_op_code = BEQ_opcode) or (IR_op_code = RET_opcode) or (IR_op_code = FI_opcode)) else '0';
 	-- Rt is not read in instructions: LW, NOP, RTE, RET and JAL
-	rt_read <= '0'; --complete
+	-- SW, ARIT, BEQ and FI read Rt
+	-- EDU <Completado siguiendo el ejemplo de arriba con el resto de instrucciones.>
+	rt_read <= '1' when ((IR_op_code = ARIT_opcode) or (IR_op_code = SW_opcode) or (IR_op_code = BEQ_opcode) or (IR_op_code = FI_opcode)) else '0';
 	-- Conditions for each dependency:
 	-- Notation: dep_rs_EX: data dependecy in Rs, with the instruction in EX stage.
 	dep_rs_EX 	<= 	'1' when ((valid_I_EX = '1') AND (valid_I_ID = '1') AND (Reg_Rs_ID = RW_EX) and (RegWrite_EX = '1') and (rs_read = '1'))	else '0';
 	--Complete:
-	dep_rs_Mem	<= 	'0';
+	-- EDU <Completado, si coinciden con el registro que sea va a escribir o piensa escribir la instruccion que esté en EX>
+	-- 		entonces se activa la señal de dependencia. Tiene que estar ese registro para leer y tambien han de ser validas las instrucciones
+	dep_rs_Mem	<= 	'1' when ((valid_I_MEM = '1') AND (valid_I_ID = '1') AND (Reg_Rs_ID = RW_Mem) and (RegWrite_Mem = '1') and (rs_read = '1'))	else '0';
 							
-	dep_rt_EX	<= 	'0';
+	dep_rt_EX	<= 	'1' when ((valid_I_EX = '1') AND (valid_I_ID = '1') AND (Reg_Rt_ID = RW_EX) and (RegWrite_EX = '1') and (rt_read = '1'))	else '0';
 								
-	dep_rt_Mem	<= 	'0';
+	dep_rt_Mem	<= 	'1' when ((valid_I_MEM = '1') AND (valid_I_ID = '1') AND (Reg_Rt_ID = RW_Mem) and (RegWrite_Mem = '1') and (rt_read = '1'))	else '0';
 
 -------------------------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------------------
 -- Data hazards:
+	-- EDU <Completado mirando el opcode y si hay dependencias de datos>
 	-- 1) lw_uso: 
-	ld_uso_rs <= 	'0';
-	ld_uso_rt <= 	'0';	
+	ld_uso_rs	<= '1' when (((dep_rs_EX = '1') and (RegWrite_EX = '1')) or ((dep_rs_MEM = '1') and (RegWrite_MEM = '1')) and (IR_opcode = ARIT_opcode)) else '0';
+	ld_uso_rt 	<= '1' when (((dep_rt_EX = '1') and (RegWrite_EX = '1')) or ((dep_rt_MEM = '1') and (RegWrite_MEM = '1')) and (IR_opcode = ARIT_opcode)) else '0';	
 									
 	-- 2) BEQ: BEQ reads the registers in ID, and we do not have a forwarding network in that stage
-	BEQ_rs	<= 	'0';
-	BEQ_rt	<= 	'0';
+	BEQ_rs		<= 	'1' when ((IR_op_code = BEQ_opcode) and (Reg_Rs_ID = RW_EX) and (RegWrite_EX = '1')) else '0';
+	BEQ_rt		<= 	'1' when ((IR_op_code = BEQ_opcode) and (Reg_Rt_ID = RW_EX) and (RegWrite_EX = '1')) else '0';
 		
 	-- 3) RET: Similar to beq hazard, but taking into account that RET only uses Rs
 	
-	RET_rs	<= 	'0';
+	RET_rs	<= 	'1' when ((IR_op_code = RET_opcode) and (Reg_Rs_ID = RW_EX) and (RegWrite_EX = '1')) else '0';
 	
 	-- 4) JAL: if an instruction wants to read the register in which the JAL writes, will the short-circuit network work?
 	-- JAL does not write the ALU_out or MDR data, but the PC_WB. 
