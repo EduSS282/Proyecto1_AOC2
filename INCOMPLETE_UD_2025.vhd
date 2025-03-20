@@ -79,20 +79,21 @@ begin
 -- Data hazards:
 	-- EDU <Completado mirando el opcode y si hay dependencias de datos>
 	-- 1) lw_uso: 
-	ld_uso_rs	<= '1' when (((dep_rs_EX = '1') and (RegWrite_EX = '1')) or ((dep_rs_MEM = '1') and (RegWrite_MEM = '1')) and (IR_opcode = ARIT_opcode)) else '0';
-	ld_uso_rt 	<= '1' when (((dep_rt_EX = '1') and (RegWrite_EX = '1')) or ((dep_rt_MEM = '1') and (RegWrite_MEM = '1')) and (IR_opcode = ARIT_opcode)) else '0';	
+	ld_uso_rs	<= '1' when (((dep_rs_EX = '1') or (dep_rs_MEM = '1')) and (IR_opcode = ARIT_opcode)) else '0';
+	ld_uso_rt 	<= '1' when (((dep_rt_EX = '1') or (dep_rt_MEM = '1')) and (IR_opcode = ARIT_opcode)) else '0';	
 									
 	-- 2) BEQ: BEQ reads the registers in ID, and we do not have a forwarding network in that stage
-	BEQ_rs		<= 	'1' when ((IR_op_code = BEQ_opcode) and (Reg_Rs_ID = RW_EX) and (RegWrite_EX = '1')) else '0';
-	BEQ_rt		<= 	'1' when ((IR_op_code = BEQ_opcode) and (Reg_Rt_ID = RW_EX) and (RegWrite_EX = '1')) else '0';
+	BEQ_rs		<= 	'1' when ((IR_op_code = BEQ_opcode) and ((dep_rs_Mem = '1') or (dep_rs_EX = '1'))) else '0';
+	BEQ_rt		<= 	'1' when ((IR_op_code = BEQ_opcode) and ((dep_rt_Mem = '1') or (dep_rt_EX = '1'))) else '0';
 		
 	-- 3) RET: Similar to beq hazard, but taking into account that RET only uses Rs
 	
-	RET_rs	<= 	'1' when ((IR_op_code = RET_opcode) and (Reg_Rs_ID = RW_EX) and (RegWrite_EX = '1')) else '0';
+	RET_rs	<= 	'1' when ((IR_op_code = RET_opcode) and ((dep_rs_EX = '1') or (dep_rs_Mem = '1'))) else '0';
 	
 	-- 4) JAL: if an instruction wants to read the register in which the JAL writes, will the short-circuit network work?
 	-- JAL does not write the ALU_out or MDR data, but the PC_WB. 
 	-- JAL: can be managed in several ways. One of them is to stop. It is not mandatory to stop in JALs, but if you do, use these signals. If you do not need to stop, just leave them at 0.
+	-- TODO: EDU <DEJAMOS A 0, gestionamos el JAL mediante anticipación.>
 	JAL_uso_rs	<= 	'0';
 	JAL_uso_rt <= 	'0';
 	

@@ -226,7 +226,8 @@ COMPONENT Banco_EX
 			RegWrite_WB: IN std_logic;
 			RW_WB: IN  std_logic_vector(4 downto 0);
 			MUX_ctrl_A: out std_logic_vector(1 downto 0);
-			MUX_ctrl_B: out std_logic_vector(1 downto 0)
+			MUX_ctrl_B: out std_logic_vector(1 downto 0);
+			JAL_MEM: in std_logic -- Indicates that the instruction in MEM is a JAL
 		);
 	end component;
 
@@ -548,10 +549,10 @@ begin
 	-- Inputs: Reg_Rs_EX, Reg_Rt_EX, RegWrite_MEM, RW_MEM, RegWrite_WB, RW_WB
 	-- Outputs: MUX_ctrl_A, MUX_ctrl_B
 	Unidad_Ant_INT: UA port map (	valid_I_MEM => valid_I_MEM, valid_I_WB => valid_I_WB, Reg_Rs_EX => Reg_Rs_EX, Reg_Rt_EX => Reg_Rt_EX, RegWrite_MEM => RegWrite_MEM,
-									RW_MEM => RW_MEM, RegWrite_WB => RegWrite_WB, RW_WB => RW_WB, MUX_ctrl_A => MUX_ctrl_A, MUX_ctrl_B => MUX_ctrl_B);
+									RW_MEM => RW_MEM, RegWrite_WB => RegWrite_WB, RW_WB => RW_WB, MUX_ctrl_A => MUX_ctrl_A, MUX_ctrl_B => MUX_ctrl_B, JAL_MEM => JAL_MEM);
 	-- forwarding Muxes
-	Mux_A: mux4_1 port map  ( DIn0 => BusA_EX, DIn1 => ALU_out_MEM, DIn2 => busW, DIn3 => x"00000000", ctrl => MUX_ctrl_A, Dout => Mux_A_out);
-	Mux_B: mux4_1 port map  ( DIn0 => BusB_EX, DIn1 => ALU_out_MEM, DIn2 => busW, DIn3 => x"00000000", ctrl => MUX_ctrl_B, Dout => Mux_B_out);
+	Mux_A: mux4_1 port map  ( DIn0 => BusA_EX, DIn1 => ALU_out_MEM, DIn2 => busW, DIn3 => PC4_MEM, ctrl => MUX_ctrl_A, Dout => Mux_A_out);
+	Mux_B: mux4_1 port map  ( DIn0 => BusB_EX, DIn1 => ALU_out_MEM, DIn2 => busW, DIn3 => PC4_MEM, ctrl => MUX_ctrl_B, Dout => Mux_B_out);
 	
 	----------------------------------------------------------------------------------
 	

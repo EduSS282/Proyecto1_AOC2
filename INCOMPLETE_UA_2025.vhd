@@ -12,7 +12,8 @@ entity UA is
 			RegWrite_WB: IN std_logic;
 			RW_WB: IN  std_logic_vector(4 downto 0);
 			MUX_ctrl_A: out std_logic_vector(1 downto 0);
-			MUX_ctrl_B: out std_logic_vector(1 downto 0)
+			MUX_ctrl_B: out std_logic_vector(1 downto 0);
+			JAL_MEM: in std_logic -- Indicates that the instruction in MEM is a JAL
 		);
 	end UA;
 
@@ -49,8 +50,10 @@ begin
 	-- EDU <Rellenados los casos de los muxes PARA COMPROBAR LOS NUMEROS MIRAR LINEAS 553-554>
 	MUX_ctrl_A <= 	"01" when (Corto_A_Mem = '1') else
 					"10" when (Corto_A_WB = '1') else
+					"11" when (JAL_MEM = '1') else
 					"00";
 	MUX_ctrl_B <= 	"01" when (Corto_B_Mem = '1') else
-					"10" when (Corto_B_WB = '1') else	
+					"10" when (Corto_B_WB = '1') else
+					"11" when (JAL_MEM = '1') else	
 					"00";	
 end Behavioral;
