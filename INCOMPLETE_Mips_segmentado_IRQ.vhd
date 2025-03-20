@@ -114,8 +114,10 @@ component two_bits_shifter is
            Dout : out  STD_LOGIC_VECTOR (31 downto 0));
 end component;
 
+-- TODO :  EDU <Completar la descripción de la entidad UC>
 component UC is
 Port ( 		valid_I_ID : in  STD_LOGIC; --valid bit
+			valid_I_ID_OUT : out STD_LOGIC; -- Valid bit out
 			IR_op_code : in  STD_LOGIC_VECTOR (5 downto 0);
          	Branch : out  STD_LOGIC;
            	RegDst : out  STD_LOGIC;
@@ -370,7 +372,9 @@ END COMPONENT;
 	signal Undef: std_logic;
 -- Valid Bits
 	signal valid_I_IF, valid_I_ID,  valid_I_EX, valid_I_EX_in, valid_I_MEM, valid_I_MEM_in, valid_I_WB: std_logic;
--- Counters
+	-- TODO : EDU <Otro valid_I_ID por si acaso para que no ocurran problemas.>
+	signal valid_I_ID2 : std_logic;
+	-- Counters
 	signal cycles: std_logic_vector(15 downto 0);
 	signal Ins, data_stalls, control_stalls, Mem_stalls, Exceptions, Exception_cycles: std_logic_vector(7 downto 0);
 	signal inc_cycles, inc_I, inc_data_stalls, inc_control_stalls, inc_Mem_stalls, inc_Exceptions, inc_Exception_cycles : std_logic;
@@ -470,7 +474,7 @@ begin
 	IR_op_code <= IR_ID(31 downto 26);
 	
 	-- If the Instruction in ID is invalid, UNDEF is activated.
-	UC_seg: UC port map (valid_I_ID => valid_I_ID, IR_op_code => IR_op_code, Branch => Branch_ID, RegDst => RegDst_ID,  ALUSrc => ALUSrc_ID, MemWrite => MemWrite_ID,  
+	UC_seg: UC port map (valid_I_ID => valid_I_ID, valid_I_ID_OUT => valid_I_ID2, IR_op_code => IR_op_code, Branch => Branch_ID, RegDst => RegDst_ID,  ALUSrc => ALUSrc_ID, MemWrite => MemWrite_ID,  
 								MemRead => MemRead_ID, MemtoReg => MemtoReg_ID, RegWrite => RegWrite_ID, 
 								-- signals for JAL and RET
 								jal => jal_ID, ret => ret_ID,
@@ -508,7 +512,8 @@ begin
 	-- NEW
 	-- If we are stopped at ID, the instruction sent to the EX stage is set as invalid.
 	-- The EX instruction will be valid the next cycle, if the ID instruction is valid and there is no stop.
-	valid_I_EX_in	<=  valid_I_ID and not( stall_ID);				
+	-- TODO : EDU <Cambio como se elige el VALID_EX por que lo cambiamos o no en la UC.>
+	valid_I_EX_in	<=  valid_I_ID2 and not(stall_ID);				
 				
 	-------------------------------------------------------------------------------------
 	-- if the operation is arithmetic (i.e.: IR_op_code= �000001�) we use at the funct field
