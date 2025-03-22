@@ -404,6 +404,8 @@ begin
 	-- Interaction with exceptions:
 	-- If the whole processor is stopped we do not process the exception.
 	-- If we are stopped in ID, we do process it (we don't care about the instruction in ID, we will kill it).
+
+	-- TODO COMPLETAR <LÓGICA PARA PARAR TAMBIÉN EN IF DEBIDO A STALL Y A EXCEPCIONES>
 	load_pc <= '1';
 	
 	-- END COMPLETE;
@@ -417,7 +419,10 @@ begin
 	-- Complete: eliminate the "--" to include the supported Exceptions, and complete the code with the correct conditions. See example for data abort.
 	-- This code is the input mux to the PC: it choose between PC+4, the jump address generated in ID, the address of the exception handling routine, or the return address of the exception.
 	-- The order assigns priority if two or more conditions are fulfilled.	
-	
+
+
+	-- TODO COMPLETAR <HAY QUE AÑADIR LA LÓGICA PARA LAS EXCEPCIONES UNDEF, IRQ Y EL RETORNO DE EXCEPCIÓN>
+
 	PC_in <= 	x"00000008" 		when (Exception_accepted = '1') and (Data_abort = '1') else -- If a data abort arrives we jump to address 0x00000008.
 				-- x"0000000C" 		when (Exception_accepted = '1') and (UNDEF = '1') else -- If an UNDEF arrives, we jump to address 0x0000000C.
 				-- x"00000004" 		when (Exception_accepted = '1') and (IRQ = '1') else -- If an IRQ arrives, jump to address 0x00000004
@@ -500,7 +505,7 @@ begin
 	-- IMPORTANT: to detect a hazard, first check that the instructions involved are valid; invalid instructions do not generate risks because they are not instructions to be executed.
 	-- IMPORTANT: to detect a producer-consumer relationship, you must check that there is both a producer and a consumer. 
 	-- Not all instructions produce/write data to the BR, nor do they all consume/read both operands (rs and rt).
-	-- NEW: stall_MIPS: used to stall the whole processor when the memory cannot perform the requested operation in the current cycle (i.e. when IO_MEM_ready	
+	-- NEW: stall_MIPS: used to stall the whole processor when the memory cannot perform the requested operation in the current cycle (i.e. when IO_MEM_ready)
 	-------------------------------------------------------------------------------------
 	
 	Unidad_detencion_riesgos: UD port map (	valid_I_ID => valid_I_ID, valid_I_EX => valid_I_EX, valid_I_MEM => valid_I_MEM, Reg_Rs_ID => Reg_Rs_ID, Reg_Rt_ID => Reg_Rt_ID, MemRead_EX => MemRead_EX, RW_EX => RW_EX, RegWrite_EX => RegWrite_EX,
@@ -513,6 +518,7 @@ begin
 	-- If we are stopped at ID, the instruction sent to the EX stage is set as invalid.
 	-- The EX instruction will be valid the next cycle, if the ID instruction is valid and there is no stop.
 	-- TODO : EDU <Cambio como se elige el VALID_EX por que lo cambiamos o no en la UC.>
+	-- TODO ZANOS <OKEY. ME GUSTA. ELIMINAR MECANISMOS COMPLEJOS PARA NOPS INYECTADAS>
 	valid_I_EX_in	<=  valid_I_ID2 and not(stall_ID);				
 				
 	-------------------------------------------------------------------------------------
@@ -575,13 +581,19 @@ begin
 	valid_I_MEM_in <= valid_I_EX and not(Exception_accepted);
 	-- New: if stopped at EX, no new instruction must be loaded into the MEM etap.
 	-- COMPLETE: If para_MIPS is enabled, stop execution, and keep each instruction in its current stage.
+	-- TODO COMPLETAR <SI PARAMOS MIPS HAY QUE NO CARGAR LOS BANCOS>
 	load_MEM <= not(stall_MIPS);
 	Banco_EX_MEM: Banco_MEM PORT MAP ( 	ALU_out_EX => ALU_out_EX, ALU_out_MEM => ALU_out_MEM, clk => clk, reset => reset_MEM, load => load_MEM, MemWrite_EX => MemWrite_EX,
 										MemRead_EX => MemRead_EX, MemtoReg_EX => MemtoReg_EX, RegWrite_EX => RegWrite_EX, MemWrite_MEM => MemWrite_MEM, MemRead_MEM => MemRead_MEM,
 										MemtoReg_MEM => MemtoReg_MEM, RegWrite_MEM => RegWrite_MEM, 
 										--COMPLETE: If we use BusB_EX the sw will not be able to make shorts on rt
 										-- which signal should we use to use the shorting network?
-										BusB_EX => BusB_EX,  
+										-- TODO COMPLETAR <Añadir lógica para que sw pueda anticipar rt>
+										-- TODO ZANOS <He cambiado BusB_EX que dejaban ellos por Mux_B_out
+										--				Pero no muy pensado, para estar seguros mirar si en instrucciones
+										--              donde la salida del mux sea busW o PC4_MEM se necesita BusB_EX en
+										--              etapas posteriores.>
+										BusB_EX => Mux_B_out
 										--FIN COMPLETAR
 										BusB_MEM => BusB_MEM, RW_EX => RW_EX, RW_MEM => RW_MEM,
 										valid_I_EX => valid_I_MEM_in, valid_I_MEM => valid_I_MEM,
@@ -594,6 +606,7 @@ begin
 	------------------------------------------Etapa MEM-------------------------------------------------------------------
 	--
 	-- COMPLETE: Exception Manager
+	-- TODO COMPLETAR <EXCEPCION MANAGER>
 	Exception_Mng:  Exception_manager PORT MAP (clk => clk, reset => reset, IRQ => IRQ, Data_abort => Data_abort, undef => undef, RTE_EX => RTE_EX,
 												RTE_ID => RTE_ID, valid_I_ID => valid_I_ID, valid_I_EX => valid_I_EX, valid_I_MEM => valid_I_MEM,
 												stall_MIPS => stall_MIPS, PC_out => PC_out, PC_exception_EX => PC_exception_EX, PC_exception_ID => PC_exception_ID,
@@ -613,6 +626,7 @@ begin
 	    	
 	--Nuevo: si paramos en EX no hay que cargar una instrucci�n nueva en la etap MEM
 	-- COMPLETE: If para_MIPS is enabled, stop execution, and keep each instruction at its current stage.
+	-- TODO COMPLETAR <Lógica para no cargar  en MEM si el MIPS esta parado>
 	load_WB <= '1';
 	-- NEW: only valid Fetch_inc instructions generate a Fetch_inc operation
 	Fetch_inc <= F_inc_MEM and valid_I_MEM;
@@ -630,7 +644,10 @@ begin
 	-- Initially only two inputs are used, and the other two are disconnected, but they can be used for the new instructions.	
 	-- To do this, the necessary connections must be made, and the control signal of the multiplexer must be set.	
 	-- Complete with your solution for JAL
-	-- ctrl_Mux4a1_escritura_BR <= '0'&MemtoReg_WB	;
+	-- TODO COMPLETAR <CONFIGURAR EL CONTROL DEL MUX DE ESCRITURA>
+	-- TODO ZANOS <LO HE CAMBIADO COMO EN MI P3. Ellos tenían como ctrl de Mux directamente el MemtoReg_WB, como en las primeras prácticas>.
+	--ctrl_Mux4a1_escritura_BR(0)<= MemtoReg_WB; -- Tomará 0 o 1 en funciónde si es lw u operación de ALU. (en este caso, jal_WB = 0)
+	--ctrl_MUX4a1_escritura_BR(1)<= jal_WB; -- Tomará 0 o 1 en función de si es jal o no. En este caso, multiplexor 4 a 1 siempre escoge PC4_WB.
 	mux_busW: mux4_1 port map (Din0 => ALU_out_WB, DIn1 => MDR, DIn2 => PC4_WB, DIn3 => PC4_WB, ctrl => MemtoReg_WB, Dout => busW);
 	
 
@@ -664,6 +681,7 @@ begin
 							
 	------------------------------------------------------------------------------------
 	-- Complete:
+	-- TODO COMPLETAR <NO SÉ MUY BIEN EL QUE PERO APRA CONTAR, YA SE MIRARÁ.AH VALE MODIFICAR LAS SEÑALES PARA QUE FUNCIONEN LOS CONTADORES DE ARRIBA>
 	inc_cycles <= '1';--Done
 	inc_I <= '0'; --Complete
 	inc_data_stalls <= '0'; --Complete

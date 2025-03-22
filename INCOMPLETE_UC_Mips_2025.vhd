@@ -31,7 +31,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity UC is
     Port ( 	valid_I_ID : in  STD_LOGIC; --valid bit
-			valid_I_ID_OUT : out STD_LOGIC; --valid bit
+			valid_I_ID_OUT : out STD_LOGIC; --valid bit TODO EDU 
 			IR_op_code : in  STD_LOGIC_VECTOR (5 downto 0);
          	Branch : out  STD_LOGIC;
            	RegDst : out  STD_LOGIC;
@@ -72,7 +72,8 @@ begin
 		CASE IR_op_code IS
 		--NOP 
 			-- TODO: EDU <NOP pasa a ser instrucción inválida para no participar en UA o UD.>
-			WHEN  NOP_opcode  	=>  valid_I_ID_OUT <= '1'; --NOP is always valid
+			-- TODO ZANOS <HE PUESTO valid_I_ID_OUT <= '0'; --NOP is always invalid, LA TENÍAS A 1 PERO ENTIENDO QUE ES AL REVÉS>
+			WHEN  NOP_opcode  	=>  valid_I_ID_OUT <= '0'; --NOP is always invalid
 			--ARIT
 			WHEN  ARIT_opcode  	=> 	RegDst <= '1'; RegWrite <= '1'; 
 			--LW
@@ -83,6 +84,8 @@ begin
 			WHEN  BEQ_opcode  	=>  Branch <= '1'; 
 			------------------------------------------------
 			-- COMPLETE
+			-- TODO COMPLETAR <Añadir señales a instrucciones>
+			-- TODO: EDU <Se añaden las instrucciones JAL, RET, RTE y FETCH_INC>
 			------------------------------------------------
 			-- JAL
 			WHEN  jal_opcode  	=>  jal <= '1';  -- Any more signals?
