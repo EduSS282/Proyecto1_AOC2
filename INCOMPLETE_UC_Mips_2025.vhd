@@ -67,7 +67,7 @@ UC_mux : process (IR_op_code, valid_I_ID)
 begin 
 	-- By default we set all signals to 0 which is the value that guarantees that we do not alter anything.
 	Branch <= '0'; RegDst <= '0'; ALUSrc <= '0'; MemWrite <= '0'; MemRead <= '0'; MemtoReg <= "00"; RegWrite <= '0'; UNDEF <= '0';
-	jal <= '0'; ret <= '0'; RTE <= '0'; f_inc <= '0'; valid_I_ID_OUT <= valid_I_ID -- We set the valid bit to 0 by default
+	jal <= '0'; ret <= '0'; RTE <= '0'; f_inc <= '0'; valid_I_ID_OUT <= valid_I_ID; -- We set the valid bit to 0 by default
 	IF valid_I_ID = '1' then --if the instruction is valid we analyse its operation code
 		CASE IR_op_code IS
 		--NOP 
@@ -105,7 +105,7 @@ begin
 									-- No hay que tocar nada para la ALU porque ALUCtrl está por defecto
 									-- a "000"
 									MemtoReg <= "00";
-									RegWrtie <= '1';
+									RegWrite <= '1';
 			-- OP code undefined
 			WHEN  OTHERS 	  	=> UNDEF <= '1';
 		  END CASE;
