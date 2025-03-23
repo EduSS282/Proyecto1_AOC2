@@ -48,7 +48,10 @@ begin
 -- Complete: activate Kill_IF where applicable
 
 		-- EDU <Completado sencillamente siguiendo las instrucciones de arriba>
-		Kill_IF <= '1' when ((salto_tomado = '1') and (valid_I_ID = '1')) else '0';
+		-- EDU <Añadir condicion para que si hay riesgo de datos, no se mate a la instrucción anterior porque el IF es inválido>
+		-- TODO ZANOS <AÑADIR QUE SI EN IF HAY RIESGO DE DATOS, COMO CUANDO EN BEQ NO SE HA PRODUCIDO
+		--              SOBRE RT O RS, NO SE MATE A LA INSTRUCCIÓN ANTERIOR>
+		Kill_IF <= '1' when ((salto_tomado = '1') and (valid_I_ID = '1') and (riesgo_datos_id = '0')) else '0';
 -------------------------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------------------
 -- Data dependencies:
@@ -61,7 +64,7 @@ begin
 	-- Rt is not read in instructions: LW, NOP, RTE, RET and JAL
 	-- SW, ARIT, BEQ and FI read Rt
 	-- EDU <Completado siguiendo el ejemplo de arriba con el resto de instrucciones.>
-	rt_read <= '1' when ((IR_op_code = ARIT_opcode) or (IR_op_code = SW_opcode) or (IR_op_code = BEQ_opcode) or (IR_op_code = FI_opcode)) else '0';
+	rt_read <= '1' when ((IR_op_code = ARIT_opcode) or (IR_op_code = SW_opcode) or (IR_op_code = BEQ_opcode)) else '0';
 	-- Conditions for each dependency:
 	-- Notation: dep_rs_EX: data dependecy in Rs, with the instruction in EX stage.
 	dep_rs_EX 	<= 	'1' when ((valid_I_EX = '1') AND (valid_I_ID = '1') AND (Reg_Rs_ID = RW_EX) and (RegWrite_EX = '1') and (rs_read = '1'))	else '0';
@@ -79,8 +82,8 @@ begin
 -- Data hazards:
 	-- EDU <Completado mirando el opcode y si hay dependencias de datos>
 	-- 1) lw_uso: 
-	ld_uso_rs	<= '1' when (((dep_rs_EX = '1') or (dep_rs_MEM = '1')) and (IR_opcode = ARIT_opcode)) else '0';
-	ld_uso_rt 	<= '1' when (((dep_rt_EX = '1') or (dep_rt_MEM = '1')) and (IR_opcode = ARIT_opcode)) else '0';	
+	ld_uso_rs	<= '1' when ( (dep_rs_EX = '1') and (MemRead_EX = '1')) else '0';
+	ld_uso_rt 	<= '1' when ((dep_rt_EX = '1') and (MemRead_EX = '1')) else '0';	
 									
 	-- 2) BEQ: BEQ reads the registers in ID, and we do not have a forwarding network in that stage
 	BEQ_rs		<= 	'1' when ((IR_op_code = BEQ_opcode) and ((dep_rs_Mem = '1') or (dep_rs_EX = '1'))) else '0';
