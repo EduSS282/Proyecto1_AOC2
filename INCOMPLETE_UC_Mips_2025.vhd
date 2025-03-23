@@ -38,7 +38,7 @@ entity UC is
            	ALUSrc : out  STD_LOGIC;
 		   	MemWrite : out  STD_LOGIC;
            	MemRead : out  STD_LOGIC;
-           	MemtoReg : out  STD_LOGIC_VECTOR (1 downto 0);
+           	MemtoReg : out  STD_LOGIC_VECTOR (1 downto 0);  -- SE MODIFICA RESPECTO A LA VERSIÓN ANTERIOR PARA INCLUIR DIRECTAMENTE EL CASO DEL JAL
            	RegWrite : out  STD_LOGIC;
           	jal : out  STD_LOGIC; --jal instruction 
         	ret : out  STD_LOGIC; --ret instruction
@@ -88,20 +88,24 @@ begin
 			-- TODO: EDU <Se añaden las instrucciones JAL, RET, RTE y FETCH_INC>
 			------------------------------------------------
 			-- JAL
+			-- TODO ZANOS <AÑADIDA SEÑAL REGWRITE A JAL>
 			WHEN  jal_opcode  	=>  jal <= '1';  -- Any more signals?
 									MemtoReg <= "10"; 
 									RegDst <= '0';
+									RegWrite <= '1';
 			-- RET
 			WHEN  RET_opcode  	=>  ret <= '1'; -- Any more signals?
 			--RTE
 			WHEN  RTE_opcode  	=>  RTE <= '1'; -- Any more signals?
 			--Fetch_inc
+			-- TODO ZANOS <AÑADIDA SEÑAL REGWRITE A FETCH_INC>
 			WHEN  FI_opcode  	=>  f_inc <= '1';
 									ALuSrc <= '1';
 									RegDst <= '0'; -- Queremos RT.
 									-- No hay que tocar nada para la ALU porque ALUCtrl está por defecto
 									-- a "000"
 									MemtoReg <= "00";
+									RegWrtie <= '1';
 			-- OP code undefined
 			WHEN  OTHERS 	  	=> UNDEF <= '1';
 		  END CASE;

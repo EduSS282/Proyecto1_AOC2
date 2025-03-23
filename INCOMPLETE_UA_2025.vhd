@@ -13,12 +13,13 @@ entity UA is
 			RW_WB: IN  std_logic_vector(4 downto 0);
 			MUX_ctrl_A: out std_logic_vector(1 downto 0);
 			MUX_ctrl_B: out std_logic_vector(1 downto 0);
+			-- EDU <Añadimos la señal JAL_MEM para detectar si la instrucción en MEM es un JAL>
 			JAL_MEM: in std_logic -- Indicates that the instruction in MEM is a JAL
 		);
 	end UA;
 
 Architecture Behavioral of UA is
-signal Corto_A_Mem, Corto_B_Mem, Corto_A_WB, Corto_B_WB: std_logic;
+signal Corto_A_Mem, Corto_B_Mem, Corto_A_WB, Corto_B_WB, Corto_A_JALMEM, Corto_B_: std_logic;
 begin
 
 
@@ -41,6 +42,12 @@ begin
 	-- EDU <Lo mismo que arriba pero con Rt POR EJEMPLO lw $4, 0($5) , NOP , NOP , add $6, $5, $4>
 	Corto_B_WB	<= '1' when ((Reg_Rt_EX = RW_WB) and (RegWrite_WB = '1') and (valid_I_WB = '1')) else '0';
 
+	-- TODO ZANOS <MISMA LÓGICA PARA TRAER EL JAL
+	--				PREGUNTA: NO HACE FALTA PONER EL REGWRITE_MEM = 1 PORQUE VIENE IMPLÍCITO POR EL JAL NO?>
+	Corto_A_JALMEM <= '1' when ((Reg_Rs_EX = RW_MEM) and (RegWrite_MEM = '1') and (valid_I_MEM = '1') and (JAL_MEM = '1')) else '0';
+	Corto_B_JALMEM <= '1' when ((Reg_Rt_EX = RW_MEM) and (RegWrite_MEM = '1') and (valid_I_MEM = '1') and (JAL_MEM = '1')) else '0';
+	
+
 	-- With the above signals, the input of the muxes is chosen:
 	-- input 00: corresponds to the data from the register bank
 	-- input 01: data from the Mem stage
@@ -48,12 +55,13 @@ begin
 	-- Complete: We give an example for the Corto_A_Mem, you must add the rest of cases
 
 	-- EDU <Rellenados los casos de los muxes PARA COMPROBAR LOS NUMEROS MIRAR LINEAS 553-554>
+	-- TODO ZANOS <ANTES HABÍA UN JALMEM = 1. AHORA SE COMPRUEBA SI ADEMÁS COINCIDE EL VALOR DE LOS REGISTROS>
 	MUX_ctrl_A <= 	"01" when (Corto_A_Mem = '1') else
 					"10" when (Corto_A_WB = '1') else
-					"11" when (JAL_MEM = '1') else
+					"11" when (Corto_A_JALMEM = '1') else
 					"00";
 	MUX_ctrl_B <= 	"01" when (Corto_B_Mem = '1') else
 					"10" when (Corto_B_WB = '1') else
-					"11" when (JAL_MEM = '1') else	
+					"11" when (Corto_B_JALMEM= '1') else	
 					"00";	
 end Behavioral;
