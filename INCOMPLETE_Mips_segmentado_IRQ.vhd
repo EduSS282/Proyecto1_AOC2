@@ -363,7 +363,7 @@ END COMPONENT;
 	signal MUX_ctrl_A, MUX_ctrl_B : std_logic_vector(1 downto 0);
 	signal salto_tomado: std_logic;
 -- NEW SIGNALS
-	signal stall_ID, stall_MIPS, RegWrite_EX_mux_out, Kill_IF, reset_ID, load_ID, load_EX, load_Mem, load_WB : std_logic;
+	signal stall_ID, stall_MIPS, RegWrite_EX_mux_out, Kill_IF, reset_ID, load_ID, load_EX, load_MEM, load_WB : std_logic;
 	signal Write_output, write_output_UC : std_logic;
 -- SIGNALS for Exceptions--
 	signal MIPS_status, status_input: std_logic_vector(1 downto 0);
@@ -406,7 +406,7 @@ begin
 	-- If we are stopped in ID, we do process it (we don't care about the instruction in ID, we will kill it).
 
 	-- TODO COMPLETAR <LÓGICA PARA PARAR TAMBIÉN EN IF DEBIDO A STALL Y A EXCEPCIONES>
-	load_pc <= '1';
+	load_pc <= (Exception_accepted or not(stall_ID)) and not(stall_MIPS);
 	
 	-- END COMPLETE;
 	------------------------------------------------------------------------------------
@@ -424,9 +424,9 @@ begin
 	-- TODO COMPLETAR <HAY QUE AÑADIR LA LÓGICA PARA LAS EXCEPCIONES UNDEF, IRQ Y EL RETORNO DE EXCEPCIÓN>
 
 	PC_in <= 	x"00000008" 		when (Exception_accepted = '1') and (Data_abort = '1') else -- If a data abort arrives we jump to address 0x00000008.
-				-- x"0000000C" 		when (Exception_accepted = '1') and (UNDEF = '1') else -- If an UNDEF arrives, we jump to address 0x0000000C.
-				-- x"00000004" 		when (Exception_accepted = '1') and (IRQ = '1') else -- If an IRQ arrives, jump to address 0x00000004
-				-- Exception_LR_output when RTE_ID = '1' else 	--@ retorno. If it is an RTE we revert to the @ we had stored in the Exception_LR			
+				x"0000000C" 		when (Exception_accepted = '1') and (UNDEF = '1') else -- If an UNDEF arrives, we jump to address 0x0000000C.
+				x"00000004" 		when (Exception_accepted = '1') and (IRQ = '1') else -- If an IRQ arrives, jump to address 0x00000004
+				Exception_LR_output when RTE_ID = '1' else 	--@ retorno. If it is an RTE we revert to the @ we had stored in the Exception_LR			
 				BusA 				when RET_ID = '1' else 	--The address stored in the Rs register outgoing from port A of the BR is chosen.
 				Dirsalto_ID 		when salto_tomado = '1' else --@ Jump of the BEQ and JAL. The RTE and RET may also activate the "salto_tomado" signal, but  but due to the order of the sentence, RET or RTE will be chosen first			PC4; -- PC+4
 				PC4; -- PC+4
@@ -593,7 +593,7 @@ begin
 										--				Pero no muy pensado, para estar seguros mirar si en instrucciones
 										--              donde la salida del mux sea busW o PC4_MEM se necesita BusB_EX en
 										--              etapas posteriores.>
-										BusB_EX => Mux_B_out
+										BusB_EX => Mux_B_out,
 										--FIN COMPLETAR
 										BusB_MEM => BusB_MEM, RW_EX => RW_EX, RW_MEM => RW_MEM,
 										valid_I_EX => valid_I_MEM_in, valid_I_MEM => valid_I_MEM,
@@ -627,7 +627,7 @@ begin
 	--Nuevo: si paramos en EX no hay que cargar una instrucci�n nueva en la etap MEM
 	-- COMPLETE: If para_MIPS is enabled, stop execution, and keep each instruction at its current stage.
 	-- TODO COMPLETAR <Lógica para no cargar  en MEM si el MIPS esta parado>
-	load_WB <= '1';
+	load_WB <= not(stall_MIPS);
 	-- NEW: only valid Fetch_inc instructions generate a Fetch_inc operation
 	Fetch_inc <= F_inc_MEM and valid_I_MEM;
 	Banco_MEM_WB: Banco_WB PORT MAP ( 	ALU_out_MEM => ALU_out_MEM, ALU_out_WB => ALU_out_WB, Mem_out => Mem_out, MDR => MDR, clk => clk, reset => reset, load => load_WB, 
@@ -681,13 +681,13 @@ begin
 							
 	------------------------------------------------------------------------------------
 	-- Complete:
-	-- TODO COMPLETAR <NO SÉ MUY BIEN EL QUE PERO APRA CONTAR, YA SE MIRARÁ.AH VALE MODIFICAR LAS SEÑALES PARA QUE FUNCIONEN LOS CONTADORES DE ARRIBA>
+	-- TODO COMPLETAR <NO SÉ MUY BIEN EL QUE PERO PARA CONTAR, YA SE MIRARÁ.AH VALE MODIFICAR LAS SEÑALES PARA QUE FUNCIONEN LOS CONTADORES DE ARRIBA>
 	inc_cycles <= '1';--Done
-	inc_I <= '0'; --Complete
-	inc_data_stalls <= '0'; --Complete
-	inc_control_stalls <= '0'; --Complete
-	inc_Exceptions <= '0';--Complete
-	inc_Mem_stalls <= '0'; --Complete
+	inc_I <= valid_I_WB; --Complete
+	inc_data_stalls <= stall_ID and not(stall_MIPS); --Complete
+	inc_control_stalls <= kill_IF; --Complete
+	inc_Exceptions <= Exception_accepted; --Complete
+	inc_Mem_stalls <= stall_MIPS; --Complete
 	
 	------------------------------------------------------------------------------------			
 end Behavioral;
