@@ -41,8 +41,8 @@ Port ( 		ALU_out_EX : in  STD_LOGIC_VECTOR (31 downto 0);
          	RegWrite_EX : in  STD_LOGIC;
 			MemWrite_MEM : out  STD_LOGIC;
         	MemRead_MEM : out  STD_LOGIC;
-         	MemtoReg_MEM : out  STD_LOGIC;
-         	RegWrite_MEM : out  STD_LOGIC_VECTOR (1 downto 0);
+         	MemtoReg_MEM : out  STD_LOGIC_VECTOR (1 downto 0);
+         	RegWrite_MEM : out  STD_LOGIC;
          	BusB_EX: in  STD_LOGIC_VECTOR (31 downto 0); -- para los store
 			BusB_MEM: out  STD_LOGIC_VECTOR (31 downto 0); -- para los store
 			RW_EX : in  STD_LOGIC_VECTOR (4 downto 0); -- registro destino de la escritura

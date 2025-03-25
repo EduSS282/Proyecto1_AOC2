@@ -388,7 +388,8 @@ END COMPONENT;
 	-- new signal for fetch_inc instruction
 	signal f_inc_ID, f_inc_ex, f_inc_mem : std_logic;
 	signal signoExtendido_EX, signoExtendido_MEM, signoExtendido_WB : std_logic_vector(31 downto 0);
-
+-- TODO : EDU NUEVA SEÑAL PARA NO ADELANTAR RT EN INSTRUCCIONES QUE CARGAN ESE REGISTRO
+	signal Ultimo_Ctrl : std_logic_vector (1 downto 0);
 begin
 
 	-- ****************************************************************************************************
@@ -562,11 +563,14 @@ begin
 	Unidad_Ant_INT: UA port map (	valid_I_MEM => valid_I_MEM, valid_I_WB => valid_I_WB, Reg_Rs_EX => Reg_Rs_EX, Reg_Rt_EX => Reg_Rt_EX, RegWrite_MEM => RegWrite_MEM,
 									RW_MEM => RW_MEM, RegWrite_WB => RegWrite_WB, RW_WB => RW_WB, MUX_ctrl_A => MUX_ctrl_A, MUX_ctrl_B => MUX_ctrl_B, JAL_MEM => JAL_MEM);
 	-- forwarding Muxes
+	Ultimo_Ctrl <= 	"00" when (RegWrite_EX = '1') else
+					MUX_ctrl_B; 	
+
 	Mux_A: mux4_1 port map  ( DIn0 => BusA_EX, DIn1 => ALU_out_MEM, DIn2 => busW, DIn3 => PC4_MEM, ctrl => MUX_ctrl_A, Dout => Mux_A_out);
-	Mux_B: mux4_1 port map  ( DIn0 => BusB_EX, DIn1 => ALU_out_MEM, DIn2 => busW, DIn3 => PC4_MEM, ctrl => MUX_ctrl_B, Dout => Mux_B_out);
+	Mux_B: mux4_1 port map  ( DIn0 => BusB_EX, DIn1 => ALU_out_MEM, DIn2 => busW, DIn3 => PC4_MEM, ctrl => Ultimo_Ctrl, Dout => Mux_B_out);
 	
 	----------------------------------------------------------------------------------
-	
+		
 	
 	muxALU_src: mux2_1 port map (Din0 => Mux_B_out, DIn1 => inm_ext_EX, ctrl => ALUSrc_EX, Dout => ALU_Src_out);
 	
@@ -618,10 +622,10 @@ begin
 	-- The component is in the SOC
 	-- Interface with the IO/MD subsystem
 	-- TODO ZANOS <CAMBIOS PARA LÓGICA>
-	-- 	WE <= (MemWrite_MEM and (not(F_inc_MEM))) and valid_I_MEM; --Write signal to the IO/MD subsystem. Only written if it is a valid instruction
-	--  RE <= (MemRead_MEM and (not(F_inc_MEM))) and valid_I_MEM; --Write signal to the IO/MD subsystem. Only read if it is a valid instruction
-	WE <= MemWrite_MEM and valid_I_MEM; --Write signal to the IO/MD subsystem. Only written if it is a valid instruction
-	RE <= MemRead_MEM and valid_I_MEM; --Write signal to the IO/MD subsystem. Only read if it is a valid instruction
+	WE <= (MemWrite_MEM and (not(F_inc_MEM))) and valid_I_MEM; --Write signal to the IO/MD subsystem. Only written if it is a valid instruction
+	RE <= (MemRead_MEM and (not(F_inc_MEM))) and valid_I_MEM; --Write signal to the IO/MD subsystem. Only read if it is a valid instruction
+	--WE <= MemWrite_MEM and valid_I_MEM; --Write signal to the IO/MD subsystem. Only written if it is a valid instruction
+	--RE <= MemRead_MEM and valid_I_MEM; --Write signal to the IO/MD subsystem. Only read if it is a valid instruction
 	ADDR <= ALU_out_MEM; --@ sent from the MIPS to the IO/MD subsystem
 	Dout <= BusB_MEM; --Data sent from the MIPS to the IO/MD subsystem
 	-- In the interface there is also the IO_MEM_ready input that tells us whether the IO/MD subsystem is going to carry out the IO/MD operation in this cycle.
