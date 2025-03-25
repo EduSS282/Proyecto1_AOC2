@@ -105,7 +105,7 @@ begin
 									RegDst <= '0'; -- Queremos RT.
 									-- No hay que tocar nada para la ALU porque ALUCtrl está por defecto
 									-- a "000"
-									MemtoReg <= "00";
+									MemtoReg <= "01";
 									RegWrite <= '1';
 									MemRead <= '1';
 									MemWrite <= '1';
