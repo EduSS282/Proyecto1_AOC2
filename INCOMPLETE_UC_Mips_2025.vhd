@@ -99,6 +99,7 @@ begin
 			WHEN  RTE_opcode  	=>  RTE <= '1'; -- Any more signals?
 			--Fetch_inc
 			-- TODO ZANOS <AÑADIDA SEÑAL REGWRITE A FETCH_INC>
+			-- TODO ZANOS <AÑADIDAS SEÑALES DE MEMORIA>
 			WHEN  FI_opcode  	=>  f_inc <= '1';
 									ALuSrc <= '1';
 									RegDst <= '0'; -- Queremos RT.
@@ -106,7 +107,9 @@ begin
 									-- a "000"
 									MemtoReg <= "00";
 									RegWrite <= '1';
-			-- OP code undefined
+									MemRead <= '1';
+									MemWrite <= '1';
+			-- OP code undefined1
 			WHEN  OTHERS 	  	=> UNDEF <= '1';
 		  END CASE;
 	END IF;

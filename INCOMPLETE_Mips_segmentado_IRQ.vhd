@@ -617,6 +617,9 @@ begin
 	-- NEW: in this stage we access the IO/MD subsystem. As we have taken it out of the MIPS, the component does not appear directly, only the signals. 
 	-- The component is in the SOC
 	-- Interface with the IO/MD subsystem
+	-- TODO ZANOS <CAMBIOS PARA LÓGICA>
+	-- 	WE <= (MemWrite_MEM and (not(F_inc_MEM))) and valid_I_MEM; --Write signal to the IO/MD subsystem. Only written if it is a valid instruction
+	--  RE <= (MemRead_MEM and (not(F_inc_MEM))) and valid_I_MEM; --Write signal to the IO/MD subsystem. Only read if it is a valid instruction
 	WE <= MemWrite_MEM and valid_I_MEM; --Write signal to the IO/MD subsystem. Only written if it is a valid instruction
 	RE <= MemRead_MEM and valid_I_MEM; --Write signal to the IO/MD subsystem. Only read if it is a valid instruction
 	ADDR <= ALU_out_MEM; --@ sent from the MIPS to the IO/MD subsystem
