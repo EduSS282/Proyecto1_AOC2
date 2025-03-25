@@ -1,3 +1,12 @@
 1. JAL Y RET
     1.1 PRUEBA SIMPLE DE JAL Y LUEGO RET -> MISMA PRACTICA 3
     1.2 PRUEBA DE HACER RET SOBRE UN REGISTRO DIFERENTE SIN HACER JAL ANTES
+    1.3 PRUEBA DE ANTICIPACIONES Y DETENCION.
+        Vemos que el LW_INC funciona correctamente a distancia 1 de si mismo.
+        Tenemos caso de LW r1 | LW r1 | ADD r1,r1,r1 exploramos:
+        El posible choque entre LW, y la anticipacion de 2 posibles instrucciones a la vez.
+        Tenemos add r1,r1,r1 | sw r1 (ocasión de parada).
+        Tenemos add r2,r1,r2 | X | sw r2 (ocasión de anticipo) 
+        Tenemos tambien add r1,r1,r1 | X | add r2,r1,r2 (choque a distancia 2 de instrucciones, en este caso anticipo).
+        Vemos la parada obligatoria de resolución de BEQ.
+        Tenemos tambien sub r3,r3,r1 | add r3,r3,r2 (ocasion de anticipo)
