@@ -685,10 +685,11 @@ begin
 	------------------------------------------------------------------------------------
 	-- Complete:
 	-- TODO COMPLETAR <NO SÉ MUY BIEN EL QUE PERO PARA CONTAR, YA SE MIRARÁ.AH VALE MODIFICAR LAS SEÑALES PARA QUE FUNCIONEN LOS CONTADORES DE ARRIBA>
+	-- TODO ZANOS METER NOT STALL MIPS EN INC_I
 	inc_cycles <= '1';--Done
-	inc_I <= valid_I_WB; --Complete
+	inc_I <= valid_I_WB and NOT(stall_MIPS); --Complete
 	inc_data_stalls <= stall_ID and not(stall_MIPS); --Complete
-	inc_control_stalls <= kill_IF; --Complete
+	inc_control_stalls <= kill_IF and not(STALL_MIPS); --Complete
 	inc_Exceptions <= Exception_accepted; --Complete
 	inc_Mem_stalls <= stall_MIPS; --Complete
 	
