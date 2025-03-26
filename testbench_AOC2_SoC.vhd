@@ -53,8 +53,8 @@
 -- 		Si no se ha hecho todavía el módulo de excepciones sencillamente se ignora esta señal
 		EXT_IRQ <= '1';
 		if INT_ACK = '0' then 
-			wait until INT_ACK ='1'; 
-	  	end if;
+		wait until INT_ACK ='1'; 
+		end if;
 		EXT_IRQ <= '0';
 		wait for CLK_period*50;
 		EXT_IRQ <= '1';
@@ -62,7 +62,7 @@
 		if INT_ACK = '0' then 
 			wait until INT_ACK ='1'; 
 	  	end if;
-	  	EXT_IRQ <= '0';
+		EXT_IRQ <= '0';
 		wait for CLK_period*50;
 		-- Ahora interrumpimos sin parar
 		EXT_IRQ <= '1';
