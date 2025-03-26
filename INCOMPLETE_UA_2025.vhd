@@ -57,12 +57,13 @@ begin
 
 	-- EDU <Rellenados los casos de los muxes PARA COMPROBAR LOS NUMEROS MIRAR LINEAS 553-554>
 	-- TODO ZANOS <ANTES HABÍA UN JALMEM = 1. AHORA SE COMPRUEBA SI ADEMÁS COINCIDE EL VALOR DE LOS REGISTROS>
-	MUX_ctrl_A <= 	"01" when (Corto_A_Mem = '1') else
+	-- TODO ZANOS <CAMBIADO ORDEN PARA PRIORIDADES>
+	MUX_ctrl_A <= 	"11" when (Corto_A_JALMEM = '1') else
+					"01" when (Corto_A_Mem = '1') else
 					"10" when (Corto_A_WB = '1') else
-					"11" when (Corto_A_JALMEM = '1') else
 					"00";
-	MUX_ctrl_B <= 	"01" when (Corto_B_Mem = '1') else
+	MUX_ctrl_B <= 	"11" when (Corto_B_JALMEM= '1') else	
+					"01" when (Corto_B_Mem = '1') else
 					"10" when (Corto_B_WB = '1') else
-					"11" when (Corto_B_JALMEM= '1') else	
 					"00";
 end Behavioral;
