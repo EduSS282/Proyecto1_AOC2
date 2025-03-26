@@ -31,7 +31,6 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity UC is
     Port ( 	valid_I_ID : in  STD_LOGIC; --valid bit
-			valid_I_ID_OUT : out STD_LOGIC; --valid bit TODO EDU 
 			IR_op_code : in  STD_LOGIC_VECTOR (5 downto 0);
          	Branch : out  STD_LOGIC;
            	RegDst : out  STD_LOGIC;
@@ -67,13 +66,13 @@ UC_mux : process (IR_op_code, valid_I_ID)
 begin 
 	-- By default we set all signals to 0 which is the value that guarantees that we do not alter anything.
 	Branch <= '0'; RegDst <= '0'; ALUSrc <= '0'; MemWrite <= '0'; MemRead <= '0'; MemtoReg <= "00"; RegWrite <= '0'; UNDEF <= '0';
-	jal <= '0'; ret <= '0'; RTE <= '0'; f_inc <= '0'; valid_I_ID_OUT <= valid_I_ID; -- We set the valid bit to 0 by default
+	jal <= '0'; ret <= '0'; RTE <= '0'; f_inc <= '0';
 	IF valid_I_ID = '1' then --if the instruction is valid we analyse its operation code
 		CASE IR_op_code IS
 		--NOP 
 			-- TODO: EDU <NOP pasa a ser instrucción inválida para no participar en UA o UD.>
 			-- TODO ZANOS <HE PUESTO valid_I_ID_OUT <= '0'; --NOP is always invalid, LA TENÍAS A 1 PERO ENTIENDO QUE ES AL REVÉS>
-			WHEN  NOP_opcode  	=>  valid_I_ID_OUT <= '0'; --NOP is always invalid
+			WHEN  NOP_opcode  	=>  
 			--ARIT
 			WHEN  ARIT_opcode  	=> 	RegDst <= '1'; RegWrite <= '1'; 
 			--LW
