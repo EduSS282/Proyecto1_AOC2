@@ -1,3 +1,6 @@
+# Programa simple de la práctica 3
+# no buscamos forzar ninguna situación específica pero nos sirve
+# para comprobar el funcionamiento de JAL, RET.
 beq r0,r0,inicio
 beq r0,r0,fin
 beq r0,r0,fin
@@ -5,7 +8,7 @@ beq r0,r0,fin
 lw r1,24(r0)		# Cargar inicio
 lw r2,28(r0)		# Cargar incrementador
 lw r3,32(r0)		# Cargar fin de iteraciones.
-jal r7,#2			# Irme a saber donde.
+jal r7, 2			# Irme a saber donde.
 sw r5,20(r0)		# Guardar valores.
 beq r0,r0,-1 		# Está linea es el fin.
 beq r1,r3, 4 		# Carga	r valores.
@@ -14,13 +17,6 @@ add r1,r1,r2		# Sumar a la @mememoria
 add r5,r5,r6		# Sumatorio.
 beq r0,r0, 7		# Volver arriba.
 ret r7				# Ir a FIN.
-
-
-Rs = 25-21
-Rt = 20-16
-Rt es donde guardamos en un lw
-Rd = 16-11
-K  = 15-0
 
 000100 00000 00000 0000 0000 0000 0011 beq r0,r0,INICIO (#3)
 0x10000003

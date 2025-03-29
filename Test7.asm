@@ -1,17 +1,17 @@
-lw_inc r1,20(r0)
-lw_inc r1,20(r0)
-add r1,r1,r1
-sw r1,28(r0)
-add r2,r1,r2
-add r3,r2,r1
-sw r2,24(r0)
-beq r3,r1,5
-sub r3,r3,r1
-add r3,r2,r3
-beq r0,r0,2
-NOP
-NOP
-beq r0,r0,#-1
+lw_inc r1,20(r0)	# Queremos probar la interacción con 2 lw_inc sobre el mismo registro y dirección
+lw_inc r1,20(r0)	# de memoria para ver que la memoria se actualiza correctamente a la vez que el registro r1.
+add r1,r1,r1		# A su vez nos permite asegurarnos de que anticipamos el valor del segundo lw_inc.
+sw r1,28(r0)		## Con estas instrucciones vamos a probar que el add que tiene '##' a la derecha no intenta
+add r2,r1,r2		## anticipar el sw pero sí que intenta anticipar el valor del add r1,r1,r1 de más arriba.
+add r3,r2,r1		### Probamos la anticipacion a distancia 1 Rs.
+sw r2,24(r0)		### Probamos anticipacion a distancia 2 de Rs.
+beq r3,r1,5			#### Buscamos ver si se detiene o no correctamente con un escritor a distancia 2.
+sub r3,r3,r1		##### Buscamos probar en la instrucción add r3,r2,r3
+add r3,r2,r3		##### la correcta anticipacion de Rt a distancia 1.
+beq r0,r0,2			###### Ver el funcionamiento de un BEQ que va a saltar
+NOP					####### Relleno
+NOP					####### Relleno
+beq r0,r0,#-1		####### Relleno
 
 010000 00000 00001 0000 0000 0001 0100 lw_inc r1,20(r0)
 0x40010014
