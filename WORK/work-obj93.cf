@@ -1,0 +1,76 @@
+v 4
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "testbench_MD.vhd" "e00d4f13e8fab59525b2f6cceae1fd0ef1815192" "20250329124445.481":
+  entity testbench_md_mas_mc at 3( 26) + 2 on 4;
+  architecture behavior of testbench_md_mas_mc at 13( 240) + 2 on 4;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "testbench_AOC2_SoC.vhd" "e49b03c7f966bf856bde97d2a67c0a0b526a7ade" "20250329124451.545":
+  entity testbench at 3( 26) + 2 on 11;
+  architecture behavior of testbench at 10( 149) + 2 on 12;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "mux4_1.vhd" "77e61d225e8903760cce4b3e7e6390eff88901d5" "20250329124453.313":
+  entity mux4_1 at 20( 493) + 0 on 45;
+  architecture behavioral of mux4_1 at 41( 1197) + 0 on 46;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "mux2_5bits.vhd" "380d4d9ec33f6a77c2e56b7f36dec5b19b69ff9d" "20250329124453.530":
+  entity mux2_5bits at 20( 489) + 0 on 51;
+  architecture behavioral of mux2_5bits at 39( 1068) + 0 on 52;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "mux2_1.vhd" "16c03f03addbb8a3f3dad9a1da21f497d0aa4854" "20250329124453.385":
+  entity mux2_1 at 20( 493) + 0 on 47;
+  architecture behavioral of mux2_1 at 39( 1069) + 0 on 48;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "counter.vhd" "4c787804472fe6172d2d20f4bfdcfb0934d580c9" "20250329124452.346":
+  entity counter at 20( 487) + 0 on 23;
+  architecture behavioral of counter at 46( 1270) + 0 on 24;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "bits_shifter.vhd" "84314704fb90b0c3a56bacef575e87f50f736186" "20250329124452.815":
+  entity two_bits_shifter at 20( 491) + 0 on 35;
+  architecture behavioral of two_bits_shifter at 37( 1003) + 0 on 36;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "adder32.vhd" "314628325a7fba8ded83ce676b48051d32b99dc4" "20250329124452.419":
+  entity adder32 at 20( 486) + 0 on 25;
+  architecture behavioral of adder32 at 39( 1097) + 0 on 26;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "REGISTER.vhd" "bb1f16639744f39ecc1ef4892185e16345358757" "20250329124452.268":
+  entity reg at 2( 2) + 0 on 21;
+  architecture behavioral of reg at 15( 421) + 0 on 22;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "RAM_I_test_exceptions.vhd" "6ad54d71d2887a852a59f779b0efe85838c9d0a1" "20250329124452.488":
+  entity memoriaram_i at 13( 423) + 0 on 27;
+  architecture behavioral of memoriaram_i at 40( 1570) + 0 on 28;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "RAM_128_32_P1_2025.vhd" "be7ff5d0ec772048bcd2a9c9a5892344eda436b4" "20250329124452.143":
+  entity ram_128_32 at 20( 489) + 0 on 19;
+  architecture behavioral of ram_128_32 at 47( 1623) + 0 on 20;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "IO_MD_subsystem.vhd" "1d5a5614c078716414d84ea4bfd96e116b69aae9" "20250329124451.704":
+  entity io_data_memory_subsystem at 20( 470) + 0 on 15;
+  architecture behavioral of io_data_memory_subsystem at 59( 2511) + 0 on 16;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "INCOMPLETE_UD_2025.vhd" "9b88fcfbf40eec3a4ec6e989242323d0a73af0a7" "20250329124452.972":
+  entity ud at 1( 0) + 0 on 39;
+  architecture behavioral of ud at 27( 1556) + 0 on 40;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "INCOMPLETE_UC_Mips_2025.vhd" "567369e0f98d6ba9dd48482f1f637f057118bdbe" "20250329124452.883":
+  entity uc at 20( 481) + 0 on 37;
+  architecture behavioral of uc at 52( 1752) + 0 on 38;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "INCOMPLETE_UA_2025.vhd" "bbb12f913849026288688c4b0ae071e44aaead50" "20250329124453.206":
+  entity ua at 1( 0) + 0 on 43;
+  architecture behavioral of ua at 21( 686) + 0 on 44;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "Ext_signo.vhd" "a86099b57bba8e351753e752f26601c7908ad4f4" "20250329124452.744":
+  entity ext_signo at 20( 488) + 0 on 33;
+  architecture behavioral of ext_signo at 37( 989) + 0 on 34;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "Exception_manager.vhd" "b132aff84134554da558fcc330761de51c066179" "20250329124453.700":
+  entity exception_manager at 6( 309) + 0 on 55;
+  architecture behavioral of exception_manager at 29( 1771) + 0 on 56;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "Banco_WB.vhd" "37fce67c6a7bc7de41f8286cab12cc7e98428a9a" "20250329124453.784":
+  entity banco_wb at 20( 487) + 0 on 57;
+  architecture behavioral of banco_wb at 63( 2356) + 0 on 58;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "Banco_MEM.vhd" "077a6c92933480c7a3f53072aee78a8d231200f6" "20250329124453.592":
+  entity banco_mem at 20( 488) + 0 on 53;
+  architecture behavioral of banco_mem at 68( 2556) + 0 on 54;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "Banco_ID.vhd" "688b006032428225982a73c4921ea61c8c20d37f" "20250329124452.574":
+  entity banco_id at 4( 288) + 0 on 29;
+  architecture behavioral of banco_id at 24( 1122) + 0 on 30;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "Banco_EX.vhd" "ba1f0ff2f6cb0d78bb1546c448caa1853bebadfc" "20250329124453.104":
+  entity banco_ex at 20( 487) + 0 on 41;
+  architecture behavioral of banco_ex at 88( 3450) + 0 on 42;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "BReg.vhd" "bb69d410cca56dd4f196ac706a7044ffa4091399" "20250329124452.658":
+  entity breg at 20( 481) + 0 on 31;
+  architecture behavioral of breg at 49( 1525) + 0 on 32;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "AOC2_SoC.vhd" "ef7740fc16fdf077b45216b1af11e8c6ca5c2ed9" "20250329124451.626":
+  entity aoc2_soc at 3( 26) + 2 on 13;
+  architecture behavior of aoc2_soc at 17( 536) + 2 on 14;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "ALU.vhd" "36885e9b9fb1d4260cef66f02b1eb0f5c1fecac1" "20250329124453.455":
+  entity alu at 20( 482) + 0 on 49;
+  architecture behavioral of alu at 40( 1278) + 0 on 50;
+file "C:\Users\thanu\OneDrive\Documentos\GitHub\Proyecto1_AOC2\" "INCOMPLETE_Mips_segmentado_IRQ.vhd" "3ae0a2bed377b705c8c97db5ad1b421ba0ee8fc3" "20250329124451.836":
+  entity mips_segmentado at 13( 671) + 0 on 17;
+  architecture behavioral of mips_segmentado at 34( 1527) + 0 on 18;

@@ -70,8 +70,7 @@ begin
 	IF valid_I_ID = '1' then --if the instruction is valid we analyse its operation code
 		CASE IR_op_code IS
 		--NOP 
-			-- TODO: EDU <NOP pasa a ser instrucción inválida para no participar en UA o UD.>
-			-- TODO ZANOS <HE PUESTO valid_I_ID_OUT <= '0'; --NOP is always invalid, LA TENÍAS A 1 PERO ENTIENDO QUE ES AL REVÉS>
+
 			WHEN  NOP_opcode  	=>  
 			--ARIT
 			WHEN  ARIT_opcode  	=> 	RegDst <= '1'; RegWrite <= '1'; 
@@ -83,11 +82,10 @@ begin
 			WHEN  BEQ_opcode  	=>  Branch <= '1'; 
 			------------------------------------------------
 			-- COMPLETE
-			-- TODO COMPLETAR <Añadir señales a instrucciones>
-			-- TODO: EDU <Se añaden las instrucciones JAL, RET, RTE y FETCH_INC>
+
 			------------------------------------------------
 			-- JAL
-			-- TODO ZANOS <AÑADIDA SEÑAL REGWRITE A JAL>
+
 			WHEN  jal_opcode  	=>  jal <= '1';  -- Any more signals?
 									MemtoReg <= "10"; 
 									RegDst <= '0';
@@ -97,8 +95,7 @@ begin
 			--RTE
 			WHEN  RTE_opcode  	=>  RTE <= '1'; -- Any more signals?
 			--Fetch_inc
-			-- TODO ZANOS <AÑADIDA SEÑAL REGWRITE A FETCH_INC>
-			-- TODO ZANOS <AÑADIDAS SEÑALES DE MEMORIA>
+
 			WHEN  FI_opcode  	=>  f_inc <= '1';
 									ALuSrc <= '1';
 									RegDst <= '0'; -- Queremos RT.

@@ -1,4 +1,4 @@
-beq r0,r0,inicio
+beq r0,r0,inicio    
 beq r0,r0,fin
 beq r0,r0,fin
 beq r0,r0,fin

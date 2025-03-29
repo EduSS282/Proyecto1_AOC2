@@ -402,7 +402,7 @@ begin
 	-- If the whole processor is stopped we do not process the exception.
 	-- If we are stopped in ID, we do process it (we don't care about the instruction in ID, we will kill it).
 
-	-- TODO COMPLETAR <LÓGICA PARA PARAR TAMBIÉN EN IF DEBIDO A STALL Y A EXCEPCIONES>
+
 	load_pc <= (Exception_accepted or not(stall_ID)) and not(stall_MIPS);
 	
 	-- END COMPLETE;
@@ -418,7 +418,7 @@ begin
 	-- The order assigns priority if two or more conditions are fulfilled.	
 
 
-	-- TODO COMPLETAR <HAY QUE AÑADIR LA LÓGICA PARA LAS EXCEPCIONES UNDEF, IRQ Y EL RETORNO DE EXCEPCIÓN>
+	
 
 	PC_in <= 	x"00000008" 		when (Exception_accepted = '1') and (Data_abort = '1') else -- If a data abort arrives we jump to address 0x00000008.
 				x"0000000C" 		when (Exception_accepted = '1') and (UNDEF = '1') else -- If an UNDEF arrives, we jump to address 0x0000000C.
@@ -514,8 +514,7 @@ begin
 	-- NEW
 	-- If we are stopped at ID, the instruction sent to the EX stage is set as invalid.
 	-- The EX instruction will be valid the next cycle, if the ID instruction is valid and there is no stop.
-	-- TODO : EDU <Cambio como se elige el VALID_EX por que lo cambiamos o no en la UC.>
-	-- TODO ZANOS <OKEY. ME GUSTA. ELIMINAR MECANISMOS COMPLEJOS PARA NOPS INYECTADAS>
+
 	valid_I_EX_in	<=  valid_I_ID and not(stall_ID);				
 				
 	-------------------------------------------------------------------------------------
@@ -578,18 +577,13 @@ begin
 	valid_I_MEM_in <= valid_I_EX and not(Exception_accepted);
 	-- New: if stopped at EX, no new instruction must be loaded into the MEM etap.
 	-- COMPLETE: If para_MIPS is enabled, stop execution, and keep each instruction in its current stage.
-	-- TODO COMPLETAR <SI PARAMOS MIPS HAY QUE NO CARGAR LOS BANCOS>
+
 	load_MEM <= not(stall_MIPS);
 	Banco_EX_MEM: Banco_MEM PORT MAP ( 	ALU_out_EX => ALU_out_EX, ALU_out_MEM => ALU_out_MEM, clk => clk, reset => reset_MEM, load => load_MEM, MemWrite_EX => MemWrite_EX,
 										MemRead_EX => MemRead_EX, MemtoReg_EX => MemtoReg_EX, RegWrite_EX => RegWrite_EX, MemWrite_MEM => MemWrite_MEM, MemRead_MEM => MemRead_MEM,
 										MemtoReg_MEM => MemtoReg_MEM, RegWrite_MEM => RegWrite_MEM, 
 										--COMPLETE: If we use BusB_EX the sw will not be able to make shorts on rt
 										-- which signal should we use to use the shorting network?
-										-- TODO COMPLETAR <Añadir lógica para que sw pueda anticipar rt>
-										-- TODO ZANOS <He cambiado BusB_EX que dejaban ellos por Mux_B_out
-										--				Pero no muy pensado, para estar seguros mirar si en instrucciones
-										--              donde la salida del mux sea busW o PC4_MEM se necesita BusB_EX en
-										--              etapas posteriores.>
 										BusB_EX => Mux_B_out,
 										--FIN COMPLETAR
 										BusB_MEM => BusB_MEM, RW_EX => RW_EX, RW_MEM => RW_MEM,
@@ -617,8 +611,7 @@ begin
 	-- TODO ZANOS <CAMBIOS PARA LÓGICA>
 	WE <= (MemWrite_MEM and (not(F_inc_MEM))) and valid_I_MEM; --Write signal to the IO/MD subsystem. Only written if it is a valid instruction
 	RE <= (MemRead_MEM and (not(F_inc_MEM))) and valid_I_MEM; --Write signal to the IO/MD subsystem. Only read if it is a valid instruction
-	--WE <= MemWrite_MEM and valid_I_MEM; --Write signal to the IO/MD subsystem. Only written if it is a valid instruction
-	--RE <= MemRead_MEM and valid_I_MEM; --Write signal to the IO/MD subsystem. Only read if it is a valid instruction
+
 	ADDR <= ALU_out_MEM; --@ sent from the MIPS to the IO/MD subsystem
 	Dout <= BusB_MEM; --Data sent from the MIPS to the IO/MD subsystem
 	-- In the interface there is also the IO_MEM_ready input that tells us whether the IO/MD subsystem is going to carry out the IO/MD operation in this cycle.
@@ -626,7 +619,7 @@ begin
 	    	
 	--Nuevo: si paramos en EX no hay que cargar una instrucci�n nueva en la etap MEM
 	-- COMPLETE: If para_MIPS is enabled, stop execution, and keep each instruction at its current stage.
-	-- TODO COMPLETAR <Lógica para no cargar  en MEM si el MIPS esta parado>
+
 	load_WB <= not(stall_MIPS);
 	-- NEW: only valid Fetch_inc instructions generate a Fetch_inc operation
 	Fetch_inc <= F_inc_MEM and valid_I_MEM;
@@ -644,8 +637,7 @@ begin
 	-- Initially only two inputs are used, and the other two are disconnected, but they can be used for the new instructions.	
 	-- To do this, the necessary connections must be made, and the control signal of the multiplexer must be set.	
 	-- Complete with your solution for JAL
-	-- TODO COMPLETAR <CONFIGURAR EL CONTROL DEL MUX DE ESCRITURA>
-	-- TODO ZANOS <LO HE CAMBIADO COMO EN MI P3. Ellos tenían como ctrl de Mux directamente el MemtoReg_WB, como en las primeras prácticas>.
+
 	--ctrl_Mux4a1_escritura_BR(0)<= MemtoReg_WB; -- Tomará 0 o 1 en funciónde si es lw u operación de ALU. (en este caso, jal_WB = 0)
 	--ctrl_MUX4a1_escritura_BR(1)<= jal_WB; -- Tomará 0 o 1 en función de si es jal o no. En este caso, multiplexor 4 a 1 siempre escoge PC4_WB.
 	mux_busW: mux4_1 port map (Din0 => ALU_out_WB, DIn1 => MDR, DIn2 => PC4_WB, DIn3 => PC4_WB, ctrl => MemtoReg_WB, Dout => busW);
@@ -681,8 +673,7 @@ begin
 							
 	------------------------------------------------------------------------------------
 	-- Complete:
-	-- TODO COMPLETAR <NO SÉ MUY BIEN EL QUE PERO PARA CONTAR, YA SE MIRARÁ.AH VALE MODIFICAR LAS SEÑALES PARA QUE FUNCIONEN LOS CONTADORES DE ARRIBA>
-	-- TODO ZANOS METER NOT STALL MIPS EN INC_I
+
 	inc_cycles <= '1';--Done
 	inc_I <= valid_I_WB and NOT(stall_MIPS); --Complete
 	inc_data_stalls <= stall_ID and not(stall_MIPS); --Complete

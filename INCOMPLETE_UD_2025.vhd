@@ -47,10 +47,6 @@ begin
 -- if the instruction in ID is not valid, you have to ignore it when it tells you that it is going to jump (the same as if it tells you anything else), but pay attention to the valid instructions.
 -- Complete: activate Kill_IF where applicable
 
-		-- EDU <Completado sencillamente siguiendo las instrucciones de arriba>
-		-- EDU <Añadir condicion para que si hay riesgo de datos, no se mate a la instrucción anterior porque el IF es inválido>
-		-- TODO ZANOS <AÑADIR QUE SI EN IF HAY RIESGO DE DATOS, COMO CUANDO EN BEQ NO SE HA PRODUCIDO
-		--              SOBRE RT O RS, NO SE MATE A LA INSTRUCCIÓN ANTERIOR>
 		Kill_IF <= '1' when ((salto_tomado = '1') and (valid_I_ID = '1') and (riesgo_datos_id = '0')) else '0';
 -------------------------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------------------
@@ -63,14 +59,13 @@ begin
 	rs_read <= '1' when ((IR_op_code = ARIT_opcode) or (IR_op_code = LW_opcode) or (IR_op_code = SW_opcode) or (IR_op_code = BEQ_opcode) or (IR_op_code = RET_opcode) or (IR_op_code = FI_opcode)) else '0';
 	-- Rt is not read in instructions: LW, NOP, RTE, RET and JAL
 	-- SW, ARIT, BEQ and FI read Rt
-	-- EDU <Completado siguiendo el ejemplo de arriba con el resto de instrucciones.>
+
 	rt_read <= '1' when ((IR_op_code = ARIT_opcode) or (IR_op_code = SW_opcode) or (IR_op_code = BEQ_opcode)) else '0';
 	-- Conditions for each dependency:
 	-- Notation: dep_rs_EX: data dependecy in Rs, with the instruction in EX stage.
 	dep_rs_EX 	<= 	'1' when ((valid_I_EX = '1') AND (valid_I_ID = '1') AND (Reg_Rs_ID = RW_EX) and (RegWrite_EX = '1') and (rs_read = '1'))	else '0';
 	--Complete:
-	-- EDU <Completado, si coinciden con el registro que sea va a escribir o piensa escribir la instruccion que esté en EX>
-	-- 		entonces se activa la señal de dependencia. Tiene que estar ese registro para leer y tambien han de ser validas las instrucciones
+
 	dep_rs_Mem	<= 	'1' when ((valid_I_MEM = '1') AND (valid_I_ID = '1') AND (Reg_Rs_ID = RW_Mem) and (RegWrite_Mem = '1') and (rs_read = '1'))	else '0';
 							
 	dep_rt_EX	<= 	'1' when ((valid_I_EX = '1') AND (valid_I_ID = '1') AND (Reg_Rt_ID = RW_EX) and (RegWrite_EX = '1') and (rt_read = '1'))	else '0';
@@ -80,7 +75,7 @@ begin
 -------------------------------------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------------------------------------
 -- Data hazards:
-	-- EDU <Completado mirando el opcode y si hay dependencias de datos>
+
 	-- 1) lw_uso: 
 	ld_uso_rs	<= '1' when ( (dep_rs_EX = '1') and (MemRead_EX = '1')) else '0';
 	ld_uso_rt 	<= '1' when ((dep_rt_EX = '1') and (MemRead_EX = '1')) else '0';	
@@ -96,7 +91,7 @@ begin
 	-- 4) JAL: if an instruction wants to read the register in which the JAL writes, will the short-circuit network work?
 	-- JAL does not write the ALU_out or MDR data, but the PC_WB. 
 	-- JAL: can be managed in several ways. One of them is to stop. It is not mandatory to stop in JALs, but if you do, use these signals. If you do not need to stop, just leave them at 0.
-	-- TODO: EDU <DEJAMOS A 0, gestionamos el JAL mediante anticipación.>
+
 	JAL_uso_rs	<= 	'0';
 	JAL_uso_rt <= 	'0';
 	

@@ -1,4 +1,4 @@
-lw r1, 20(r0)
+lw r1, 20(r0) 
 add r1,r2,r1
 ret r1
 nop

@@ -33,18 +33,13 @@ begin
 	Corto_A_Mem <= '1' when ((Reg_Rs_EX = RW_MEM) and (RegWrite_MEM = '1') and (valid_I_MEM = '1'))	else '0';
 	-- COMPLETE:
 
-	-- EDU <Lo mismo que arriba pero con Rt POR EJEMPLO lw $4, 0($5) , NOP ,  add $6, $5, $4>
 	Corto_B_Mem <= '1' when ((Reg_Rt_EX = RW_MEM) and (RegWrite_MEM = '1') and (valid_I_MEM = '1')) else '0';
 	
-	-- EDU <Lo mismo que arriba pero con Rt POR EJEMPLO lw $4, 0($5) , NOP , NOP , add $6, $4, $5>
+
 	Corto_A_WB	<= '1' when ((Reg_Rs_EX = RW_WB) and (RegWrite_WB = '1') and (valid_I_WB = '1')) else '0';
 	
-	-- EDU <Lo mismo que arriba pero con Rt POR EJEMPLO lw $4, 0($5) , NOP , NOP , add $6, $5, $4>
-	-- El problema es que nos hace: lw $4, 4($5), NOP, lw $4, 0($5)
 	Corto_B_WB	<= '1' when ((Reg_Rt_EX = RW_WB) and (RegWrite_WB = '1') and (valid_I_WB = '1')) else '0';
 
-	-- TODO ZANOS <MISMA LÓGICA PARA TRAER EL JAL
-	--				PREGUNTA: NO HACE FALTA PONER EL REGWRITE_MEM = 1 PORQUE VIENE IMPLÍCITO POR EL JAL NO?>
 	Corto_A_JALMEM <= '1' when ((Reg_Rs_EX = RW_MEM) and (RegWrite_MEM = '1') and (valid_I_MEM = '1') and (JAL_MEM = '1')) else '0';
 	Corto_B_JALMEM <= '1' when ((Reg_Rt_EX = RW_MEM) and (RegWrite_MEM = '1') and (valid_I_MEM = '1') and (JAL_MEM = '1')) else '0';
 	
@@ -55,9 +50,6 @@ begin
 	-- input 10: data from the WB stage
 	-- Complete: We give an example for the Corto_A_Mem, you must add the rest of cases
 
-	-- EDU <Rellenados los casos de los muxes PARA COMPROBAR LOS NUMEROS MIRAR LINEAS 553-554>
-	-- TODO ZANOS <ANTES HABÍA UN JALMEM = 1. AHORA SE COMPRUEBA SI ADEMÁS COINCIDE EL VALOR DE LOS REGISTROS>
-	-- TODO ZANOS <CAMBIADO ORDEN PARA PRIORIDADES>
 	MUX_ctrl_A <= 	"11" when (Corto_A_JALMEM = '1') else
 					"01" when (Corto_A_Mem = '1') else
 					"10" when (Corto_A_WB = '1') else
