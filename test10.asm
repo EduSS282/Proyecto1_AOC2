@@ -22,7 +22,7 @@ INI: LW R3, 20(r0)
 RTI   LW R3, 28(r0)     ;
       SW r3, 0x7008(r0) ;  INT_ACK <= 1
       NOP
-      RTE
+      RTE tb
 RT_abort: 
 BEQ r0, r0, #-1; 
 RT_undef: 

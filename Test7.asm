@@ -11,6 +11,10 @@ add r3,r2,r3
 beq r0,r0,2
 NOP
 NOP
+SW r6, 32(r0)
+SUB R7, R6, R6 
+LW R4, 32(r0)
+RET  R4
 beq r0,r0,#-1
 
 010000 00000 00001 0000 0000 0001 0100 lw_inc r1,20(r0)

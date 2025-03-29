@@ -42,30 +42,30 @@
  stim_proc: process
    begin		
       	EXT_IRQ <= '0';
---		No estamos usando IO_input, serviría para interaccionar con el MIPS
+--		No estamos usando IO_input, servirï¿½a para interaccionar con el MIPS
       	IO_input <= x"00000000";
    		reset <= '1';
     	wait for CLK_period*2;
 		reset <= '0';
 		wait for CLK_period*40;
 -- 		Vamos a interrumpir en momentos distintos
--- 		La señal INT se mantiene activa hasta que se recibe el ACK
--- 		Si no se ha hecho todavía el módulo de excepciones sencillamente se ignora esta señal
-		EXT_IRQ <= '1';
-		if INT_ACK = '0' then 
-		wait until INT_ACK ='1'; 
-		end if;
-		EXT_IRQ <= '0';
-		wait for CLK_period*50;
-		EXT_IRQ <= '1';
-		EXT_IRQ <= '1';
-		if INT_ACK = '0' then 
-			wait until INT_ACK ='1'; 
-	  	end if;
-		EXT_IRQ <= '0';
-		wait for CLK_period*50;
-		-- Ahora interrumpimos sin parar
-		EXT_IRQ <= '1';
+-- 		La seï¿½al INT se mantiene activa hasta que se recibe el ACK
+-- 		Si no se ha hecho todavï¿½a el mï¿½dulo de excepciones sencillamente se ignora esta seï¿½al
+--		EXT_IRQ <= '1';
+--		if INT_ACK = '0' then 
+--		wait until INT_ACK ='1'; 
+--		end if;
+--		EXT_IRQ <= '0';
+--		wait for CLK_period*50;
+--		EXT_IRQ <= '1';
+--		EXT_IRQ <= '1';
+--		if INT_ACK = '0' then 
+--			wait until INT_ACK ='1'; 
+--	  	end if;
+--		EXT_IRQ <= '0';
+--		wait for CLK_period*50;
+--		-- Ahora interrumpimos sin parar
+--		EXT_IRQ <= '1';
 		wait;
    end process;
 
